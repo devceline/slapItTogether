@@ -11,6 +11,7 @@ add_executable(
 	slapItTogether
 	src/main.cpp
 	src/utils/file.cpp
+	src/glAbstractions/program.cpp
 )
 
 add_subdirectory(deps/glfw)

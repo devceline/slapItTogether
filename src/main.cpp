@@ -3,48 +3,11 @@
 #include <GL/glew.h>   
 #include "GLFW/glfw3.h"
 
+#include <glAbstractions/program.hpp>
 #include <utils/file.hpp>
 
 
-
-
 int compileProgram() {
-
-    std::cout << "Compiling program..." << std::endl;;
-
-    int vShader = glCreateShader(GL_VERTEX_SHADER);
-    int fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    int program = glCreateProgram();
-
-    File vShaderFile("../resources/shaders/vertexShader.glsl", TEXT_FILE);
-    File fShaderFile("../resources/shaders/fragmentShader.glsl", TEXT_FILE);
-
-    const char* vShaderSource = vShaderFile.getStringContent()->c_str();
-    const char* vSources[] = {vShaderSource};
-    int vSourceLengths[] = {static_cast<int>(vShaderFile.getStringContent()->length())};
-    glShaderSource(vShader, 1, vSources, vSourceLengths);
-    glCompileShader(vShader);
-
-    const char* fShaderSource = fShaderFile.getStringContent()->c_str();
-    const char* fSources[] = {fShaderSource};
-    int fSourceLengths[] = {static_cast<int>(fShaderFile.getStringContent()->length())};
-    glShaderSource(fShader, 1, fSources, fSourceLengths);
-    glCompileShader(fShader);
-
-    int size;
-    char info[256];
-    glGetShaderInfoLog(vShader, 256, &size, info);
-    std::cout << info << std::endl;
-
-    glGetShaderInfoLog(fShader, 256, &size, info);
-    std::cout << info << std::endl;
-
-    glAttachShader(program, vShader);
-    glAttachShader(program, fShader);
-
-    glLinkProgram(program);
-
-    return program;
 }
 
 int main(void){
@@ -65,8 +28,20 @@ int main(void){
 
     };
 
-    int program = compileProgram();
-    glUseProgram(program);
+
+
+    GlProgram program;
+
+    File vShaderFile("../resources/shaders/vertexShader.glsl", TEXT_FILE);
+    File fShaderFile("../resources/shaders/fragmentShader.glsl", TEXT_FILE);
+
+    program.addShader(GL_VERTEX_SHADER, vShaderFile.getStringContent()->c_str());
+    program.addShader(GL_FRAGMENT_SHADER, fShaderFile.getStringContent()->c_str());
+    program.compile();
+
+    std::cout << program.getError() << std::endl;
+
+    glUseProgram(program.getId());
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
