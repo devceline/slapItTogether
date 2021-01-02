@@ -1,13 +1,24 @@
 #include <iostream>
+#include <vector>
 
 #include <GL/glew.h>   
 #include "GLFW/glfw3.h"
 
 #include <glAbstractions/program.hpp>
+#include <glAbstractions/vertexBuffer.hpp>
 #include <utils/file.hpp>
 
 
-int compileProgram() {
+void GLAPIENTRY messageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam){
+    
+    std::cout <<  message << std::endl;
+
 }
 
 int main(void){
@@ -21,14 +32,8 @@ int main(void){
         return 123;
     }
 
-    GLfloat vectors[] = {
-        -0.5f, -0.5f,
-        0.0f, 0.0f,
-        0.5f, -0.5f
-
-    };
-
-
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(messageCallback, 0);
 
     GlProgram program;
 
@@ -36,19 +41,26 @@ int main(void){
     File fShaderFile("../resources/shaders/fragmentShader.glsl", TEXT_FILE);
 
     program.addShader(GL_VERTEX_SHADER, vShaderFile.getStringContent()->c_str());
+    std::cout << program.getError() << std::endl;
     program.addShader(GL_FRAGMENT_SHADER, fShaderFile.getStringContent()->c_str());
+    std::cout << program.getError() << std::endl;
     program.compile();
 
-    std::cout << program.getError() << std::endl;
 
     glUseProgram(program.getId());
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vectors), vectors, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (const void*)0); 
-    glEnableVertexAttribArray(0);
+
+    float vectors[15] = {
+       -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 
+        0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 
+        0.5f,  -0.5f, 1.0f, 0.0f, 0.0f, 
+
+    };
+
+    int layout[2] = {2, 3};
+    VertexBuffer<float> vb(2, layout);
+    vb.pushData(15, vectors);
+
 
     GLuint elements[] = {
         0,1,2//,3,4,5
@@ -58,7 +70,6 @@ int main(void){
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-
 
 
     while(!glfwWindowShouldClose(window)){

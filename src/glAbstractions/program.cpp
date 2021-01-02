@@ -23,7 +23,11 @@ void GlProgram::compile() {
     glLinkProgram(this->id);
 }
 
-unsigned int GlProgram::getId() {
+void GlProgram::use(){
+    glUseProgram(this->id);
+}
+
+const unsigned int GlProgram::getId() {
     return this->id;
 }
 
