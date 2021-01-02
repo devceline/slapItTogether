@@ -12,6 +12,7 @@ add_executable(
 	src/main.cpp
 	src/utils/file.cpp
 	src/glAbstractions/program.cpp
+	src/glAbstractions/vertexBufferTFloat.cpp
 )
 
 add_subdirectory(deps/glfw)

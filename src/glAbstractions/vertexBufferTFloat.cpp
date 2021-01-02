@@ -1,8 +1,6 @@
 #include <glAbstractions/vertexBuffer.hpp>
 #include <GL/glew.h>
 
-#include <iostream>
-
 template<>
 VertexBuffer<float>::VertexBuffer(unsigned int attribCount, int* attribArray):
     glType(GL_FLOAT), vertexElementCount(0)
@@ -37,11 +35,11 @@ VertexBuffer<float>::VertexBuffer(unsigned int attribCount, int* attribArray):
                 (const void*) accumalatedByteCount
         );
 
+        if(i == attribCount - 1) break;
+
         vertexElementCount += attribArray[i];
         accumalatedByteCount = attribArray[i] * sizeof(float);
     }
-
-    std::cout << "SUM: " << sum << '\n' << "BYTE COUNT: " << accumalatedByteCount << std::endl;
 
 
 }

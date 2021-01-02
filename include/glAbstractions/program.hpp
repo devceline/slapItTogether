@@ -3,15 +3,16 @@
 
 class GlProgram {
     private:
-        unsigned int id;
+        const unsigned int id;
         const unsigned int errorLogSize;
         char* errorLog;
     public:
         GlProgram();
+        const unsigned int getId();
         void addShader(unsigned int shaderType, const char* sourceCode);
+        void use();
         char* getError();
         void compile();
-        unsigned int getId();
         ~GlProgram();
 
 };
